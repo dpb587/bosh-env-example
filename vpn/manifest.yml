@@ -1,0 +1,88 @@
+---
+name: vpn
+releases:
+  - name: openvpn
+    url: https://s3.amazonaws.com/dpb587-bosh-release-openvpn-us-east-1/compiled_releases/openvpn-2.1.3-on-ubuntu-trusty-stemcell-3312-compiled-1.20161127080014.0.tgz
+    sha1: f0d7f095a8ffec3d295f35221c17fea919c0ed21
+    version: 2.1.3
+resource_pools:
+  - name: default
+    network: public
+networks:
+  - name: public
+    type: manual
+    subnets:
+      - range: ((iaas.public_subnet_cidr))
+        gateway: ((iaas.public_subnet_gateway))
+        static:
+          - ((iaas_vpn.private_ip))
+        dns: [8.8.8.8]
+  - name: vip
+    type: vip
+instance_groups:
+  - name: openvpn
+    instances: 1
+    jobs:
+      - name: openvpn
+        release: openvpn
+    resource_pool: default
+    networks:
+      - name: public
+        default:
+          - dns
+          - gateway
+        static_ips:
+          - ((iaas_vpn.private_ip))
+      - name: vip
+        static_ips:
+          - ((iaas_vpn.public_ip))
+    properties:
+      openvpn:
+        local: ((iaas_vpn.private_ip))
+        port: 443
+        server: "10.187.48.0 255.255.255.0"
+        ca_crt: ((ca.certificate))
+        server_crt: ((server.certificate))
+        server_key: ((server.private_key))
+        crl_pem: ""
+        dh_pem: |
+          -----BEGIN DH PARAMETERS-----
+          MIIBCAKCAQEA/oih/YXvkf13npOIF5LW170/V5j4R20NjL/IzgdZUYMlsQtm5zMZ
+          LwA8Vk1v9UnSWkopAGuJ8gZxz4qKk2p2MLzHSDwXC5khGrrJlHfjn7H0lYilyFqn
+          2YhmfCQ7z7ih0jUS/iNf/+xUmfoJn/2OMEY3gmcAxAbtVRqNtGFwsTjtap3Rgbt9
+          /j7Xbrsp3JqSeWN3VSqMzAgUrjkkkv52HcDo4zA1KfN7m+ROj/uGxcrmvZr7G0RK
+          9yJ2f8I1x8EW3p+CmWhHcmoNyxxlfRHIsZ+82+BIessN99pSxCbjWvhggntFLRwC
+          fcrq5wk9ei7dzYjZHSPHqvhmmZgWKJZYQwIBAg==
+          -----END DH PARAMETERS-----
+        iptables:
+          - "POSTROUTING -t nat -s 10.187.48.0/24 -d 10.187.0.0/18 -j MASQUERADE -m comment --comment 'vpn -> vpc'"
+cloud_provider:
+  mbus: https://mbus:((mbus_password))@((iaas_vpn.public_ip)):6868
+  properties:
+    agent:
+      mbus: "https://mbus:((mbus_password))@0.0.0.0:6868"
+    blobstore:
+      provider: local
+      path: /var/vcap/micro_bosh/data/cache
+    ntp:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+variables:
+  - name: mbus_password
+    type: password
+  - name: ca
+    type: certificate
+    options:
+      common_name: openvpn
+  - name: server
+    type: certificate
+    options:
+      ca: ca
+      common_name: server
+      eku_auth: server
+  - name: client
+    type: certificate
+    options:
+      ca: ca
+      common_name: client
+      eku_auth: client

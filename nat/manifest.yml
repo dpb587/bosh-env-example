@@ -1,0 +1,52 @@
+---
+name: nat
+releases:
+  - name: networking
+    url: http://bosh.io/d/github.com/cloudfoundry/networking-release?v=8
+    sha1: 092a6e0649e5adb88ec947b0d37d3e5afebe68fe
+    version: 8
+resource_pools:
+  - name: default
+    network: public
+networks:
+  - name: public
+    type: manual
+    subnets:
+      - range: ((iaas.public_subnet_cidr))
+        gateway: ((iaas.public_subnet_gateway))
+        static:
+          - ((iaas_nat.private_ip))
+        dns: [8.8.8.8]
+  - name: vip
+    type: vip
+instance_groups:
+  - name: nat
+    instances: 1
+    jobs:
+      - name: openvpn
+        release: openvpn
+    resource_pool: default
+    networks:
+      - name: public
+        default:
+          - dns
+          - gateway
+        static_ips:
+          - ((iaas_vpn.private_ip))
+      - name: vip
+        static_ips:
+          - ((iaas_vpn.public_ip))
+cloud_provider:
+  mbus: https://mbus:((mbus_password))@((iaas_vpn.public_ip)):6868
+  properties:
+    agent:
+      mbus: "https://mbus:((mbus_password))@0.0.0.0:6868"
+    blobstore:
+      provider: local
+      path: /var/vcap/micro_bosh/data/cache
+    ntp:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+variables:
+  - name: mbus_password
+    type: password

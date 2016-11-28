@@ -1,0 +1,42 @@
+---
+- type: replace
+  path: /releases/-
+  value:
+    name: bosh-aws-cpi
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=60
+    sha1: 8e40a9ff892204007889037f094a1b0d23777058
+- type: replace
+  path: /resource_pools/name=default/stemcell?
+  value:
+    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3312
+    sha1: ea1d210b58a12d957d0b9b6a6cc538262ee4a924
+- type: replace
+  path: /resource_pools/name=default/cloud_properties?
+  value:
+    instance_type: t2.nano
+    availability_zone: ((iaas.availability_zone))
+- type: replace
+  path: /networks/name=private/subnets/0/cloud_properties?
+  value:
+    subnet: ((iaas.public_subnet_id))
+- type: replace
+  path: /cloud_provider/template?
+  value:
+    name: aws_cpi
+    release: bosh-aws-cpi
+- type: replace
+  path: /cloud_provider/ssh_tunnel?
+  value:
+    host: ((iaas_nat.public_ip))
+    port: 22
+    user: vcap
+    private_key: ((iaas.ssh_private_key))
+- type: replace
+  path: /cloud_provider/properties/aws?
+  value:
+    access_key_id: ((iaas.aws_access_key))
+    secret_access_key: ((iaas.aws_secret_key))
+    default_key_name: ((iaas.ssh_name))
+    default_security_groups:
+      - ((iaas_nat.securitygroup))
+    region: ((iaas.region))

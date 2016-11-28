@@ -1,0 +1,25 @@
+---
+profile: |
+  client
+  dev tun
+  proto tcp
+  remote ((iaas_vpn.public_ip)) 443
+  comp-lzo
+  resolv-retry infinite
+  nobind
+  persist-key
+  persist-tun
+  mute-replay-warnings
+  remote-cert-tls server
+  verb 3
+  mute 20
+  tls-client
+  <ca>
+  ((ca.certificate))
+  </ca>
+  <cert>
+  ((client.certificate))
+  </cert>
+  <key>
+  ((client.private_key))
+  </key>

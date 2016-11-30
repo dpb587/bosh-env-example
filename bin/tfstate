@@ -1,0 +1,4 @@
+#!/bin/bash
+
+terraform output -state="state/$1.tfstate" -json \
+  | jq --arg n "$1" '{($n):(to_entries|map({"key":.key,"value":.value.value})|from_entries)}'

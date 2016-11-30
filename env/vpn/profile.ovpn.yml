@@ -1,5 +1,5 @@
 ---
-profile: |
+profile: |+
   client
   dev tun
   proto tcp

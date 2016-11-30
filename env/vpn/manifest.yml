@@ -16,7 +16,9 @@ networks:
         gateway: ((iaas.public_subnet_gateway))
         static:
           - ((iaas_vpn.private_ip))
-        dns: [8.8.8.8]
+        dns:
+          - 8.8.8.8
+          - 8.8.4.4
   - name: vip
     type: vip
 instance_groups:
@@ -40,7 +42,7 @@ instance_groups:
       openvpn:
         local: ((iaas_vpn.private_ip))
         port: 443
-        server: "10.187.48.0 255.255.255.0"
+        server: "10.187.240.0 255.255.255.0"
         ca_crt: ((ca.certificate))
         server_crt: ((server.certificate))
         server_key: ((server.private_key))
@@ -55,7 +57,9 @@ instance_groups:
           fcrq5wk9ei7dzYjZHSPHqvhmmZgWKJZYQwIBAg==
           -----END DH PARAMETERS-----
         iptables:
-          - "POSTROUTING -t nat -s 10.187.48.0/24 -d 10.187.0.0/18 -j MASQUERADE -m comment --comment 'vpn -> vpc'"
+          - "POSTROUTING -t nat -s 10.187.240.0/24 -d 10.187.0.0/18 -j MASQUERADE -m comment --comment 'vpn -> vpc'"
+        push_routes:
+          - "10.187.0.0 255.255.192.0"
 cloud_provider:
   mbus: https://mbus:((mbus_password))@((iaas_vpn.public_ip)):6868
   properties:
@@ -79,10 +83,12 @@ variables:
     options:
       ca: ca
       common_name: server
-      eku_auth: server
+      ext_key_usage:
+        - server_auth
   - name: client
     type: certificate
     options:
       ca: ca
       common_name: client
-      eku_auth: client
+      ext_key_usage:
+        - client_auth

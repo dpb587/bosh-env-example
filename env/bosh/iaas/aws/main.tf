@@ -1,16 +1,23 @@
 data "terraform_remote_state" "iaas" {
   backend = "local"
   config = {
-    path = "${path.module}/../../../state/iaas.tfstate"
+    path = "${path.module}/../../../../state/iaas.tfstate"
+  }
+}
+
+data "terraform_remote_state" "iaas_vpn" {
+  backend = "local"
+  config = {
+    path = "${path.module}/../../../../state/iaas_vpn.tfstate"
   }
 }
 
 variable "private_ip" { default = "10.187.16.5" }
 output "private_ip" { value = "${var.private_ip}" }
 
-output "securitygroup" { value = "${aws_security_group.main.id}" }
+output "director_securitygroup" { value = "${aws_security_group.director.id}" }
 
-resource "aws_security_group" "main" {
+resource "aws_security_group" "director" {
   name_prefix = "${data.terraform_remote_state.iaas.environment}/bosh/main"
   vpc_id = "${data.terraform_remote_state.iaas.vpc_id}"
 
@@ -19,7 +26,7 @@ resource "aws_security_group" "main" {
     to_port = 4222
     protocol = "tcp"
     cidr_blocks = [
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas.private_subnet_cidr}"
     ]
   }
 
@@ -28,7 +35,7 @@ resource "aws_security_group" "main" {
     to_port = 25250
     protocol = "tcp"
     cidr_blocks = [
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas.private_subnet_cidr}"
     ]
   }
 
@@ -37,7 +44,7 @@ resource "aws_security_group" "main" {
     to_port = 25555
     protocol = "tcp"
     cidr_blocks = [
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas.private_subnet_cidr}"
     ]
   }
 
@@ -46,7 +53,7 @@ resource "aws_security_group" "main" {
     to_port = 25777
     protocol = "tcp"
     cidr_blocks = [
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas.private_subnet_cidr}"
     ]
   }
 
@@ -66,8 +73,7 @@ resource "aws_security_group" "main" {
     to_port = 22
     protocol = "tcp"
     cidr_blocks = [
-      # todo from vpn only
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas_vpn.vpn_cidr}"
     ]
   }
 
@@ -76,8 +82,7 @@ resource "aws_security_group" "main" {
     to_port = 6868
     protocol = "tcp"
     cidr_blocks = [
-      # todo from vpn only
-      "${aws_subnet.private.cidr_block}"
+      "${data.terraform_remote_state.iaas_vpn.vpn_cidr}"
     ]
   }
 }

@@ -16,15 +16,21 @@ networks:
         gateway: ((iaas.public_subnet_gateway))
         static:
           - ((iaas_nat.private_ip))
-        dns: [8.8.8.8]
+        dns:
+          - 8.8.8.8
+          - 8.8.4.4
   - name: vip
     type: vip
 instance_groups:
   - name: nat
     instances: 1
     jobs:
-      - name: openvpn
-        release: openvpn
+      - name: nat
+        release: networking
+        properties:
+          networking:
+            nat:
+              out_interface: eth0
     resource_pool: default
     networks:
       - name: public
@@ -32,12 +38,12 @@ instance_groups:
           - dns
           - gateway
         static_ips:
-          - ((iaas_vpn.private_ip))
+          - ((iaas_nat.private_ip))
       - name: vip
         static_ips:
-          - ((iaas_vpn.public_ip))
+          - ((iaas_nat.public_ip))
 cloud_provider:
-  mbus: https://mbus:((mbus_password))@((iaas_vpn.public_ip)):6868
+  mbus: https://mbus:((mbus_password))@((iaas_nat.public_ip)):6868
   properties:
     agent:
       mbus: "https://mbus:((mbus_password))@0.0.0.0:6868"

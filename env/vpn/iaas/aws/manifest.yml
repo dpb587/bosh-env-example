@@ -13,8 +13,16 @@
 - type: replace
   path: /resource_pools/name=default/cloud_properties?
   value:
-    instance_type: t2.nano
+    advertised_routes:
+      - table_id: ((iaas.public_routetable_id))
+        destination: 10.187.240.0/24
+      - table_id: ((iaas.private_routetable_id))
+        destination: 10.187.240.0/24
+      - table_id: ((iaas.internal_routetable_id))
+        destination: 10.187.240.0/24
     availability_zone: ((iaas.availability_zone))
+    instance_type: t2.nano
+    source_dest_check: false
 - type: replace
   path: /networks/name=public/subnets/0/cloud_properties?
   value:

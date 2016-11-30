@@ -1,0 +1,3 @@
+[submodule "env/bosh/upstream"]
+	path = env/bosh/upstream
+	url = https://github.com/cloudfoundry/bosh-deployment.git

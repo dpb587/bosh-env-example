@@ -14,6 +14,8 @@ profile: |+
   verb 3
   mute 20
   tls-client
+  cipher BF-CBC
+  keysize 256
   <ca>
   ((ca.certificate))
   </ca>

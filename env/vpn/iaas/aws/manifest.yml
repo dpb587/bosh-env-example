@@ -8,8 +8,8 @@
 - type: replace
   path: /resource_pools/name=default/stemcell?
   value:
-    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3312
-    sha1: ea1d210b58a12d957d0b9b6a6cc538262ee4a924
+    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3312.3
+    sha1: aabdf995a9ff68ab95453c76da15d2b7b8895a40
 - type: replace
   path: /resource_pools/name=default/cloud_properties?
   value:

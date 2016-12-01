@@ -2,9 +2,9 @@
 name: vpn
 releases:
   - name: openvpn
-    url: https://s3.amazonaws.com/dpb587-bosh-release-openvpn-us-east-1/releases/openvpn-3.0.0.tgz
-    sha1: 34027c761876d24549cf4f406375cc8f62f94564
-    version: 3.0.0
+    url: https://s3.amazonaws.com/dpb587-bosh-release-openvpn-us-east-1/compiled_releases/openvpn-3.1.0-on-ubuntu-trusty-stemcell-3312.3-compiled-1.20161201164803.0.tgz
+    sha1: 889433fcec5a48152a0e3f8508fec8df8e6196b3
+    version: 3.1.0
 resource_pools:
   - name: default
     network: public
@@ -46,7 +46,6 @@ instance_groups:
         ca_crt: ((ca.certificate))
         server_crt: ((server.certificate))
         server_key: ((server.private_key))
-        crl_pem: ""
         dh_pem: |
           -----BEGIN DH PARAMETERS-----
           MIIBCAKCAQEA/oih/YXvkf13npOIF5LW170/V5j4R20NjL/IzgdZUYMlsQtm5zMZ

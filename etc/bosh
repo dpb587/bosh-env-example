@@ -1,0 +1,7 @@
+export BOSH_USER=admin
+export BOSH_PASSWORD="$( bosh interpolate --path /admin_password state/bosh-vars.yml )"
+
+bosh \
+  --ca-cert "$( bosh interpolate --path /default_ca/certificate state/bosh-vars.yml )" \
+  -e "$( bosh interpolate --path /private_ip <( iaas bosh ) )" \
+  alias-env $BOSH_ENVIRONMENT

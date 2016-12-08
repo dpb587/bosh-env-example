@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+component=$1 ; shift
+resource=$1 ; shift
+
+bosh interpolate \
+  --vars-store state/$component-vars.yml \
+  --vars-file iaas=<( iaas iaas ) \
+  --vars-file iaas_$component=<( iaas $component ) \
+  env/$component/$resource \
+  $@ \
+  | cat

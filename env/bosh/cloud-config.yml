@@ -1,0 +1,53 @@
+azs:
+- name: z1
+  cloud_properties: {}
+
+vm_types:
+- name: default
+  cloud_properties: {}
+- name: large
+  cloud_properties: {}
+
+disk_types:
+- name: default
+  disk_size: 3000
+- name: large
+  disk_size: 50_000
+
+networks:
+- name: public
+  subnets:
+  - range: nil
+    gateway: nil
+    azs:
+    - z1
+    dns:
+    - 169.254.169.253
+    cloud_properties: {}
+- name: private
+  subnets:
+  - range: nil
+    gateway: nil
+    azs:
+    - z1
+    dns:
+    - 169.254.169.253
+    cloud_properties: {}
+- name: internal
+  subnets:
+  - range: nil
+    gateway: nil
+    azs:
+    - z1
+    dns:
+    - 169.254.169.253
+    cloud_properties: {}
+- name: vip
+  type: vip
+
+compilation:
+  workers: 4
+  reuse_compilation_vms: false
+  az: z1
+  vm_type: default
+  network: internal

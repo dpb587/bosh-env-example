@@ -1,0 +1,1 @@
+output "stub" { value = "stub" }

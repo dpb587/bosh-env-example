@@ -1,0 +1,8 @@
+- type: replace
+  path: /stemcells/alias=default
+  value:
+    alias: default
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3312.3
+    sha1: aabdf995a9ff68ab95453c76da15d2b7b8895a40
+    version: 3312.3

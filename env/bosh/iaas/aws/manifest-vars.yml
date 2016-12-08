@@ -1,4 +1,3 @@
----
 - type: replace
   path: /access_key_id?
   value: ((iaas.aws_access_key))

@@ -5,11 +5,13 @@
     name: bosh-aws-cpi
     url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=60
     sha1: 8e40a9ff892204007889037f094a1b0d23777058
+    version: 60
 - type: replace
   path: /resource_pools/name=default/stemcell?
   value:
     url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3312
     sha1: ea1d210b58a12d957d0b9b6a6cc538262ee4a924
+    version: 3312
 - type: replace
   path: /resource_pools/name=default/cloud_properties?
   value:

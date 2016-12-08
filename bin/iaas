@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+component=$1 ; shift
+
+# https://github.com/hashicorp/terraform/issues/10454
+terraform output -state="state/iaas_$component.tfstate" -json \
+  | jq --arg n "$component" 'to_entries|map({"key":.key,"value":.value.value})|from_entries'

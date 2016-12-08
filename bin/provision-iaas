@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+component=$1 ; shift
+
+terraform apply \
+  -state=state/iaas_$component.tfstate \
+  env/$component/iaas/$iaas

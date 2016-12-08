@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+component=$1 ; shift
+
+bosh create-env \
+  --vars-store state/$component-vars.yml \
+  --vars-file iaas=<( iaas iaas ) \
+  --vars-file iaas_$component=<( iaas $component ) \
+  --ops-file env/$component/iaas/$iaas/manifest.yml \
+  --state state/$component.json \
+  env/$component/manifest.yml \
+  $@

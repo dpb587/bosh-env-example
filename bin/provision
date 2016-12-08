@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+component=$1 ; shift
+
+if [ -e env/$component/iaas ]; then
+  provision-iaas $component
+fi
+
+if [ -e env/$component/manifest.yml ]; then
+  if grep -q '^cloud_provider:' env/$component/manifest.yml; then
+    provision-env $component
+  else
+    provision-deployment $component
+  fi
+fi

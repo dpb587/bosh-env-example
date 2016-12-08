@@ -1,7 +1,7 @@
 data "terraform_remote_state" "iaas" {
   backend = "local"
   config = {
-    path = "${path.module}/../../../../state/iaas.tfstate"
+    path = "${path.module}/../../../../state/iaas_iaas.tfstate"
   }
 }
 
